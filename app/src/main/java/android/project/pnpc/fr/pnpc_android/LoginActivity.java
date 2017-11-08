@@ -1,5 +1,6 @@
 package android.project.pnpc.fr.pnpc_android;
 
+import android.project.pnpc.fr.pnpc_android.utils.EmailValidator;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
@@ -171,11 +172,9 @@ public class LoginActivity extends AppCompatActivity {
      * @param email string email
      * @return true if valid, otherwise, false
      */
-    /*
     private boolean isEmailValid(final String email) {
         return EmailValidator.validate(email);
     }
-    */
 
     /**
      * Check the password length
