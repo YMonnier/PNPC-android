@@ -8,7 +8,7 @@
     android:orientation="vertical"
     android:background="@drawable/background_login"
     android:focusableInTouchMode="true"
-    tools:context="android.project.pnpc.fr.pnpc_android.LoginActivity_">
+    tools:context="android.project.pnpc.fr.pnpc_android.feature.LoginActivity_">
 
     <android.support.design.widget.TextInputLayout
         android:layout_width="match_parent"
