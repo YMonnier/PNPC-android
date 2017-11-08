@@ -2,12 +2,17 @@ package android.project.pnpc.fr.pnpc_android.feature;
 
 import android.project.pnpc.fr.pnpc_android.R;
 import android.project.pnpc.fr.pnpc_android.utils.EmailValidator;
+import android.project.pnpc.fr.pnpc_android.utils.Settings;
+import android.project.pnpc.fr.pnpc_android.utils.network.RestApi;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+
+import com.google.gson.JsonObject;
 
 import org.androidannotations.annotations.AfterViews;
 import org.androidannotations.annotations.Background;
@@ -15,6 +20,9 @@ import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
+import org.androidannotations.rest.spring.annotations.RestService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.client.RestClientException;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -67,8 +75,8 @@ public class LoginActivity extends AppCompatActivity {
      * Rest service to get
      * information from server.
      */
-    //@RestService
-    //RestApi tcRestApi;
+    @RestService
+    RestApi tcRestApi;
 
     /**
      * Progress Dialog
@@ -204,6 +212,38 @@ public class LoginActivity extends AppCompatActivity {
 
         auth.put(PARAMS_AUTH_EMAIL, email);
         auth.put(PARAMS_AUTH_PASSWORD, password);
+
+        try {
+            ResponseEntity<JsonObject> responseLogin = tcRestApi.login(auth);
+            Log.d(TAG, "response login: " + responseLogin);
+
+            if (responseLogin == null)
+                throw new AssertionError("response login should not be null");
+
+            if (responseLogin != null) {
+                if (responseLogin.getStatusCode().is2xxSuccessful()) {
+                    JsonObject json = responseLogin.getBody();
+
+                    // Login, get auth token
+                    String token = json.get("token").getAsString();
+                    Settings.TOKEN_AUTHORIZATION = token;
+                    Log.d(TAG, "token: " + token);
+
+                    // Get current user information
+                    tcRestApi.setHeader(Settings.AUTHORIZATION_HEADER_NAME, token);
+
+                    //updateLockUi(false);
+                }
+            } else {
+                //Snack.showFailureMessage(linearLayout, getString(R.string.error_request_4xx_5xx_status), Snackbar.LENGTH_LONG);
+            }
+            //progressView.dismiss();
+        } catch (RestClientException e) {
+            String error = e.getLocalizedMessage();
+            Log.d(TAG, "error HTTP request from userLoginTask: " + error);
+            updateLockUi(false);
+            //progressView.dismiss();
+        }
     }
 
 }
