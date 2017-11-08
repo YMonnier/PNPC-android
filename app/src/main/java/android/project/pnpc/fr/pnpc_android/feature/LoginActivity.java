@@ -1,5 +1,6 @@
 package android.project.pnpc.fr.pnpc_android.feature;
 
+import android.content.Intent;
 import android.project.pnpc.fr.pnpc_android.R;
 import android.project.pnpc.fr.pnpc_android.utils.EmailValidator;
 import android.project.pnpc.fr.pnpc_android.utils.Settings;
@@ -87,6 +88,8 @@ public class LoginActivity extends AppCompatActivity {
     @AfterViews
     public void init() {
         //progressView = new LoaderDialog(getContext(), getString(R.string.authenticating));
+        emailView.setText("test@gmail.com");
+        passwordView.setText("uhfeuhguheuhuehg");
     }
 
     /**
@@ -213,12 +216,14 @@ public class LoginActivity extends AppCompatActivity {
         auth.put(PARAMS_AUTH_EMAIL, email);
         auth.put(PARAMS_AUTH_PASSWORD, password);
 
+        startActivity(new Intent(this, EstimoteActivity_.class));
         try {
             ResponseEntity<JsonObject> responseLogin = tcRestApi.login(auth);
             Log.d(TAG, "response login: " + responseLogin);
 
-            if (responseLogin == null)
+            if (responseLogin == null) {
                 throw new AssertionError("response login should not be null");
+            }
 
             if (responseLogin != null) {
                 if (responseLogin.getStatusCode().is2xxSuccessful()) {
