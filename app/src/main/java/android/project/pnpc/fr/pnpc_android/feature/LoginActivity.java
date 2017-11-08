@@ -1,5 +1,6 @@
-package android.project.pnpc.fr.pnpc_android;
+package android.project.pnpc.fr.pnpc_android.feature;
 
+import android.project.pnpc.fr.pnpc_android.R;
 import android.project.pnpc.fr.pnpc_android.utils.EmailValidator;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -14,7 +15,6 @@ import org.androidannotations.annotations.Click;
 import org.androidannotations.annotations.EActivity;
 import org.androidannotations.annotations.UiThread;
 import org.androidannotations.annotations.ViewById;
-import org.androidannotations.rest.spring.annotations.RestService;
 
 import java.util.HashMap;
 import java.util.Map;
