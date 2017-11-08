@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">PNPC-android</string>
+    <string name="prompt_email">Email/Nickname</string>
+    <string name="prompt_password">Password</string>
+    <string name="login">Login</string>
 </resources>
