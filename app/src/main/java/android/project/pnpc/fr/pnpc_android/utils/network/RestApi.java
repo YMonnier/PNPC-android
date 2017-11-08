@@ -26,12 +26,7 @@ public interface RestApi {
     void setHeader(String name, String value);
 
     String getHeader(String name);
-
-    @Get("/programs")
-    @RequiresHeader("Authorization")
-    @Header(name = "Content-Type", value = "application/json")
-    ResponseEntity<JsonObject> getAllPrograms();
-
+    
     @Post("/auth/login")
     @Header(name = "Content-Type", value = "application/json")
     ResponseEntity<JsonObject> login(@Body Map<String, Object> formData);
