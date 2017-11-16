@@ -1,12 +1,30 @@
 package android.project.pnpc.fr.pnpc_android.navigation;
 
+import android.Manifest;
+import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.project.pnpc.fr.pnpc_android.R;
+import android.project.pnpc.fr.pnpc_android.location.Coordinate;
+import android.project.pnpc.fr.pnpc_android.location.LocationService;
+import android.project.pnpc.fr.pnpc_android.location.LocationService_;
+import android.project.pnpc.fr.pnpc_android.utils.network.GsonSingleton;
+import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.gson.Gson;
 
 import org.androidannotations.annotations.EBean;
 import org.androidannotations.annotations.RootContext;
@@ -20,8 +38,8 @@ import org.androidannotations.annotations.RootContext;
  * Map navigation facade to manipulate a google map
  */
 @EBean
-public class MapNavigation  implements OnMapReadyCallback,
-        GoogleMap.OnMapLongClickListener{
+public class MapNavigation implements OnMapReadyCallback,
+        GoogleMap.OnMapLongClickListener {
 
     /**
      * Tag used for Logger.
@@ -36,12 +54,60 @@ public class MapNavigation  implements OnMapReadyCallback,
     @RootContext
     MapActivity context;
 
-    public void init(){
+    /**
+     * Gson instance use to map json to object
+     * or to convert object to json.
+     * Used for `intent` communication.
+     */
+    private Gson gson;
+
+
+    /**
+     * Check permission
+     */
+    private int permissionCheck;
+
+    private final int MY_PERMISSIONS_REQUEST_LOCATION = 0;
+
+    public void init() {
         Log.d(TAG, "init");
+
+        this.gson = GsonSingleton.getInstance();
+
+        permissionCheck = ContextCompat.checkSelfPermission(context,
+                Manifest.permission.LOCATION_HARDWARE);
+
+        if (ContextCompat.checkSelfPermission(context,
+                Manifest.permission.LOCATION_HARDWARE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+            if (ActivityCompat.shouldShowRequestPermissionRationale(context,
+                    Manifest.permission.LOCATION_HARDWARE)) {
+
+                // Show an explanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+
+            } else {
+                ActivityCompat.requestPermissions(context,
+                        new String[]{Manifest.permission.LOCATION_HARDWARE},
+                        MY_PERMISSIONS_REQUEST_LOCATION);
+            }
+        }
+
+        showSettingsAlert();
+
         // Get Google Map and initialize it
         SupportMapFragment mapFragment = (SupportMapFragment) context.getSupportFragmentManager()
                 .findFragmentById(R.id.map_navigation);
         mapFragment.getMapAsync(this);
+
+        // Add observer broadcast messaging for location.
+        LocalBroadcastManager.getInstance(context).registerReceiver(locationReceiver,
+                new IntentFilter(LocationService.LOCATION_BROADCAST));
+
+        LocationService_.intent(context).start();
     }
 
     @Override
@@ -67,5 +133,71 @@ public class MapNavigation  implements OnMapReadyCallback,
         googleMap.getUiSettings().setMyLocationButtonEnabled(true);
         Log.d(TAG, "onMapReady");
         mapView = googleMap;
+    }
+
+    /**
+     * Handler for receive location intents. This will be
+     * called whenever an Intent with an action named `LocationService.LOCATION_BROADCAST`
+     * is broadcasted.
+     */
+    private BroadcastReceiver locationReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String jsonLocation = intent.getStringExtra(LocationService_.EXTRA_LOCATION);
+            Coordinate coordinate = gson.fromJson(jsonLocation, Coordinate.class);
+            Log.d(TAG, "Got location from service: " + coordinate);
+            addCoordinate(coordinate);
+        }
+    };
+
+    /**
+     * Add a new point to the specific currentPolyline.
+     *
+     * @param coordinate coordinate we want to add.
+     */
+    private void addCoordinate(final Coordinate coordinate) {
+        Log.e(TAG, "addCoordinate");
+        if (coordinate == null)
+            throw new AssertionError("coordinate should not be null");
+
+        if (coordinate != null) {
+            LatLng point = new LatLng(coordinate.getLatitude(), coordinate.getLongitude());
+            mapView.addMarker(new MarkerOptions()
+                    .position(point)
+                    .title("Hello world"));
+        }
+    }
+
+    /**
+     * Function to show settings alert dialog.
+     * On pressing the Settings button it will launch Settings Options.
+     */
+    public void showSettingsAlert() {
+        AlertDialog.Builder alertDialog = new AlertDialog.Builder(context);
+
+        // Setting Dialog Title
+        alertDialog.setTitle("GPS");
+
+        // Setting Dialog Message
+        alertDialog.setMessage("GPS is not enabled. Do you want to go to settings menu?");
+
+        // On pressing the Settings button.
+        alertDialog.setPositiveButton("Settings", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                context.startActivity(intent);
+                dialog.cancel();
+            }
+        });
+
+        alertDialog.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+
+        // Showing Alert Message
+        alertDialog.show();
     }
 }
