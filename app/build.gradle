@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'android-apt'
-apply plugin: 'realm-android'
 
 android {
     compileSdkVersion 25
@@ -37,8 +36,8 @@ android {
         exclude 'META-INF/ASL2.0'
     }
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
+        //sourceCompatibility JavaVersion.VERSION_1_8
+        //targetCompatibility JavaVersion.VERSION_1_8
     }
     /*dataBinding {
         enabled = true
@@ -55,7 +54,6 @@ buildscript {
         //classpath 'com.android.tools.build:gradle:2.2.2'
         // the latest version of the android-apt plugin
         classpath 'com.neenbedankt.gradle.plugins:android-apt:1.8'
-        classpath 'io.realm:realm-gradle-plugin:2.2.0'
         classpath 'com.google.gms:google-services:3.0.0'
         classpath 'me.tatarka:gradle-retrolambda:3.6.1'
     }
@@ -92,8 +90,6 @@ dependencies {
     compile 'com.android.support:cardview-v7:22.1.1'
     compile 'com.android.support:design:25.0.1'
     compile 'com.google.android.gms:play-services:10.0.1'
-    //DragListView github library
-    compile 'com.github.woxthebox:draglistview:1.4.4'
     // Android Annotation (AA)
     apt "org.androidannotations:androidannotations:$AAVersion"
     compile "org.androidannotations:androidannotations-api:$AAVersion"
@@ -112,4 +108,3 @@ dependencies {
 
 // Stay at the bottom
 apply plugin: 'com.android.application' //or apply plugin: 'java'
-apply plugin: 'me.tatarka.retrolambda'
