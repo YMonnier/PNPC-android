@@ -61,40 +61,10 @@ public class MapNavigation implements OnMapReadyCallback,
      */
     private Gson gson;
 
-
-    /**
-     * Check permission
-     */
-    private int permissionCheck;
-
-    private final int MY_PERMISSIONS_REQUEST_LOCATION = 0;
-
     public void init() {
         Log.d(TAG, "init");
 
         this.gson = GsonSingleton.getInstance();
-
-        permissionCheck = ContextCompat.checkSelfPermission(context,
-                Manifest.permission.LOCATION_HARDWARE);
-
-        if (ContextCompat.checkSelfPermission(context,
-                Manifest.permission.LOCATION_HARDWARE)
-                != PackageManager.PERMISSION_GRANTED) {
-
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(context,
-                    Manifest.permission.LOCATION_HARDWARE)) {
-
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
-
-            } else {
-                ActivityCompat.requestPermissions(context,
-                        new String[]{Manifest.permission.LOCATION_HARDWARE},
-                        MY_PERMISSIONS_REQUEST_LOCATION);
-            }
-        }
 
         showSettingsAlert();
 
@@ -109,6 +79,7 @@ public class MapNavigation implements OnMapReadyCallback,
 
         LocationService_.intent(context).start();
     }
+
 
     @Override
     public void onMapLongClick(LatLng latLng) {

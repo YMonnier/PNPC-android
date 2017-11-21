@@ -90,6 +90,7 @@ public class LocationService extends Service implements LocationListener {
             //                                          int[] grantResults)
             // to handle the case where the user grants the permission. See the documentation
             // for ActivityCompat#requestPermissions for more details.
+            Log.e(TAG, "Permissions denied");
             return;
         }
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 0, this);
@@ -143,6 +144,7 @@ public class LocationService extends Service implements LocationListener {
 
     @Override
     public void onProviderEnabled(String s) {
+        Log.d(TAG, "Gps is turned on");
         Toast.makeText(getBaseContext(), "Gps is turned on!! ",
                 Toast.LENGTH_SHORT).show();
     }
@@ -153,6 +155,7 @@ public class LocationService extends Service implements LocationListener {
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         startActivity(intent);
         */
+        Log.d(TAG, "Gps is turned off");
         Toast.makeText(getBaseContext(), "Gps is turned off!! ",
                 Toast.LENGTH_SHORT).show();
     }
