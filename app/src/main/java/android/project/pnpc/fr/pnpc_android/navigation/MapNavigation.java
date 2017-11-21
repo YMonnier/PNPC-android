@@ -66,18 +66,31 @@ public class MapNavigation implements OnMapReadyCallback,
 
         this.gson = GsonSingleton.getInstance();
 
-        showSettingsAlert();
-
         // Get Google Map and initialize it
         SupportMapFragment mapFragment = (SupportMapFragment) context.getSupportFragmentManager()
                 .findFragmentById(R.id.map_navigation);
         mapFragment.getMapAsync(this);
+
+        // Add observer broadcast to ask location settings id gps is disabled.
+        LocalBroadcastManager.getInstance(context).registerReceiver(askLocationReceiver,
+                new IntentFilter(LocationService.ASK_LOCATION_SETTINGS_BROADCAST));
 
         // Add observer broadcast messaging for location.
         LocalBroadcastManager.getInstance(context).registerReceiver(locationReceiver,
                 new IntentFilter(LocationService.LOCATION_BROADCAST));
 
         LocationService_.intent(context).start();
+    }
+
+    /**
+     * Method to stop observer broadcast messaging and service location.
+     * Used when use leave application from session activity(onFinish`, `onDestroy`, `onStop`)
+     */
+    public void stop() {
+        LocalBroadcastManager.getInstance(context).unregisterReceiver(locationReceiver);
+        LocalBroadcastManager.getInstance(context).unregisterReceiver(askLocationReceiver);
+        LocationService_.intent(context)
+                .stop();
     }
 
 
@@ -105,6 +118,18 @@ public class MapNavigation implements OnMapReadyCallback,
         Log.d(TAG, "onMapReady");
         mapView = googleMap;
     }
+
+    /**
+     * Handler for receive the ask location settings. This will be
+     * called whenever an Intent with an action named `LocationService.ASK_LOCATION_SETTINGS`
+     * is broadcasted.
+     */
+    private BroadcastReceiver askLocationReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            showSettingsAlert();
+        }
+    };
 
     /**
      * Handler for receive location intents. This will be
@@ -171,4 +196,6 @@ public class MapNavigation implements OnMapReadyCallback,
         // Showing Alert Message
         alertDialog.show();
     }
+
+
 }

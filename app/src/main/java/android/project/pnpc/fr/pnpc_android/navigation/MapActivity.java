@@ -1,13 +1,11 @@
 package android.project.pnpc.fr.pnpc_android.navigation;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.project.pnpc.fr.pnpc_android.R;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 
 import org.androidannotations.annotations.AfterViews;
@@ -70,5 +68,21 @@ public class MapActivity extends AppCompatActivity {
                 break;
         }
         if (!permissionToGeolocationAccepted ) finish();
+    }
+
+    @Override
+    public void finish() {
+        super.finish();
+        if (mapNavigation != null) {
+            mapNavigation.stop();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mapNavigation != null) {
+            mapNavigation.stop();
+        }
     }
 }

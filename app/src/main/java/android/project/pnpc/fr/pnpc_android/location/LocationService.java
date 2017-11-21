@@ -81,16 +81,14 @@ public class LocationService extends Service implements LocationListener {
 
         locationManager = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            // TODO: Consider calling
-            //    ActivityCompat#requestPermissions
-            // here to request the missing permissions, and then overriding
-            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-            //                                          int[] grantResults)
-            // to handle the case where the user grants the permission. See the documentation
-            // for ActivityCompat#requestPermissions for more details.
-            Log.e(TAG, "Permissions denied");
-            return;
+            Log.d(TAG, "ActivityCompat.checkSelfPermission::OK");
+        } else {
+            Log.d(TAG, "ActivityCompat.checkSelfPermission::NOT OK");
         }
+
+        if (!checkGpsStatus())
+            broadcastLocationSettings();
+
         locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 0, this);
         locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 1000, 0, this);
     }
@@ -142,20 +140,12 @@ public class LocationService extends Service implements LocationListener {
 
     @Override
     public void onProviderEnabled(String s) {
-        Log.d(TAG, "Gps is turned on");
-        Toast.makeText(getBaseContext(), "Gps is turned on!! ",
-                Toast.LENGTH_SHORT).show();
+        Log.d(TAG, "GPS is turned on !");
     }
 
     @Override
     public void onProviderDisabled(String s) {
-        /*Intent intent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        startActivity(intent);
-        */
-        Log.d(TAG, "Gps is turned off");
-        Toast.makeText(getBaseContext(), "Gps is turned off!! ",
-                Toast.LENGTH_SHORT).show();
+        Log.e(TAG, "GPS is turned off !");
     }
 
     /**
@@ -218,10 +208,21 @@ public class LocationService extends Service implements LocationListener {
         return provider1.equals(provider2);
     }
 
+    public boolean checkGpsStatus(){
+        locationManager = (LocationManager)this.getSystemService(Context.LOCATION_SERVICE);
+        return locationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+    }
+
     @Nullable
     @Override
     public IBinder onBind(Intent intent) {
         return null;
     }
 
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        locationManager.removeUpdates(this);
+    }
 }
+
