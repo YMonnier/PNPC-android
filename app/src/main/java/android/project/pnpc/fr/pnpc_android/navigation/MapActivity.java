@@ -1,10 +1,13 @@
 package android.project.pnpc.fr.pnpc_android.navigation;
 
 import android.Manifest;
+import android.annotation.TargetApi;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.project.pnpc.fr.pnpc_android.R;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 
 import org.androidannotations.annotations.AfterViews;
@@ -42,11 +45,17 @@ public class MapActivity extends AppCompatActivity {
     @AfterViews
     public void init() {
         mapNavigation.init();
-        if(!(this.checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED))
-            ActivityCompat.requestPermissions(this, permissions, REQUEST_ACCESS_FINE_LOCATION_PERMISSION);
+        checkPermissions();
+    }
 
-        if (!(this.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED))
-            ActivityCompat.requestPermissions(this, permissions, REQUEST_ACCESS_COARSE_LOCATION_PERMISSION);
+    public void checkPermissions(){
+        if (Build.VERSION.SDK_INT > 23) {
+            if (!(this.checkSelfPermission(android.Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED))
+                ActivityCompat.requestPermissions(this, permissions, REQUEST_ACCESS_FINE_LOCATION_PERMISSION);
+
+            if (!(this.checkSelfPermission(Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED))
+                ActivityCompat.requestPermissions(this, permissions, REQUEST_ACCESS_COARSE_LOCATION_PERMISSION);
+        }
     }
 
     @Override

@@ -37,7 +37,6 @@ public class LocationService extends Service implements LocationListener {
      */
     public static final String LOCATION_BROADCAST = "LOCATION_BROADCAST";
 
-
     /**
      * Intent identifier to asking location settings.
      */
@@ -48,11 +47,10 @@ public class LocationService extends Service implements LocationListener {
      */
     public static final String EXTRA_LOCATION = "EXTRA_LOCATION";
 
-
     /**
      * Location manager use to handle updating position.
      */
-    LocationManager locationManager;
+    private LocationManager locationManager;
 
     /**
      * Store the previous location to copare with the current
@@ -60,7 +58,7 @@ public class LocationService extends Service implements LocationListener {
      */
     private Location currentBestLocation = null;
 
-    private int timeInterval = 60_000;
+    private int timeInterval = 60000;
 
     @Override
     public void onCreate() {
