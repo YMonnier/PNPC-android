@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.project.pnpc.fr.pnpc_android.R;
 import android.project.pnpc.fr.pnpc_android.location.Coordinate;
+import android.project.pnpc.fr.pnpc_android.location.EstimoteService_;
 import android.project.pnpc.fr.pnpc_android.location.LocationService;
 import android.project.pnpc.fr.pnpc_android.location.LocationService_;
 import android.project.pnpc.fr.pnpc_android.utils.network.GsonSingleton;
@@ -80,6 +81,8 @@ public class MapNavigation implements OnMapReadyCallback,
                 new IntentFilter(LocationService.LOCATION_BROADCAST));
 
         LocationService_.intent(context).start();
+
+        EstimoteService_.intent(context).start();
     }
 
     /**
