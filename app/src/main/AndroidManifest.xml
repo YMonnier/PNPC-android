@@ -26,6 +26,13 @@
             android:name=".location.LocationService_"
             android:exported="false" />
 
+        <!--
+           *** Estimote service ***
+       -->
+        <service
+            android:name=".location.EstimoteService_"
+            android:exported="false" />
+
         <meta-data android:name="com.google.android.geo.API_KEY" android:value="@string/google_maps_key"/>
 
         <activity android:name=".feature.LoginActivity_">

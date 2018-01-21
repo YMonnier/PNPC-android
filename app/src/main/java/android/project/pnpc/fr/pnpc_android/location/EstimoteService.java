@@ -1,4 +1,4 @@
-package android.project.pnpc.fr.pnpc_android.feature;
+package android.project.pnpc.fr.pnpc_android.location;
 
 import android.app.Service;
 import android.content.Intent;
@@ -7,7 +7,6 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.estimote.coresdk.common.config.EstimoteSDK;
-import com.estimote.coresdk.common.requirements.SystemRequirementsChecker;
 import com.estimote.coresdk.observation.region.RegionUtils;
 import com.estimote.coresdk.observation.utils.Proximity;
 import com.estimote.coresdk.recognition.packets.EstimoteLocation;
