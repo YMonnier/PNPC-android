@@ -2,6 +2,8 @@ package android.project.pnpc.fr.pnpc_android.feature;
 
 import android.content.Intent;
 import android.project.pnpc.fr.pnpc_android.R;
+import android.project.pnpc.fr.pnpc_android.navigation.MapActivity;
+import android.project.pnpc.fr.pnpc_android.navigation.MapActivity_;
 import android.project.pnpc.fr.pnpc_android.utils.EmailValidator;
 import android.project.pnpc.fr.pnpc_android.utils.Settings;
 import android.project.pnpc.fr.pnpc_android.utils.network.RestApi;
@@ -90,6 +92,7 @@ public class LoginActivity extends AppCompatActivity {
         //progressView = new LoaderDialog(getContext(), getString(R.string.authenticating));
         emailView.setText("test@gmail.com");
         passwordView.setText("uhfeuhguheuhuehg");
+
     }
 
     /**
@@ -216,7 +219,8 @@ public class LoginActivity extends AppCompatActivity {
         auth.put(PARAMS_AUTH_EMAIL, email);
         auth.put(PARAMS_AUTH_PASSWORD, password);
 
-        startActivity(new Intent(this, EstimoteActivity_.class));
+        startActivity(new Intent(this, MapActivity_.class));
+
         try {
             ResponseEntity<JsonObject> responseLogin = tcRestApi.login(auth);
             Log.d(TAG, "response login: " + responseLogin);
