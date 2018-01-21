@@ -91,7 +91,8 @@ public class LoginActivity extends AppCompatActivity {
     public void init() {
         //progressView = new LoaderDialog(getContext(), getString(R.string.authenticating));
         emailView.setText("test@gmail.com");
-        passwordView.setText("jfrogrjgjrigj");
+        passwordView.setText("uhfeuhguheuhuehg");
+
     }
 
     /**
@@ -224,8 +225,9 @@ public class LoginActivity extends AppCompatActivity {
             ResponseEntity<JsonObject> responseLogin = tcRestApi.login(auth);
             Log.d(TAG, "response login: " + responseLogin);
 
-            if (responseLogin == null)
+            if (responseLogin == null) {
                 throw new AssertionError("response login should not be null");
+            }
 
             if (responseLogin != null) {
                 if (responseLogin.getStatusCode().is2xxSuccessful()) {
