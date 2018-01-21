@@ -6,6 +6,7 @@ import org.androidannotations.rest.spring.annotations.Accept;
 import org.androidannotations.rest.spring.annotations.Body;
 import org.androidannotations.rest.spring.annotations.Get;
 import org.androidannotations.rest.spring.annotations.Header;
+import org.androidannotations.rest.spring.annotations.Path;
 import org.androidannotations.rest.spring.annotations.Post;
 import org.androidannotations.rest.spring.annotations.RequiresHeader;
 import org.androidannotations.rest.spring.annotations.Rest;
@@ -30,5 +31,9 @@ public interface RestApi {
     @Post("/users/login")
     @Header(name = "Content-Type", value = "application/json")
     ResponseEntity<JsonObject> login(@Body Map<String, Object> formData);
+
+    @Post("/users/{user_id}/passages/{waypoint_id}")
+    @Header(name = "Content-Type", value = "application/json")
+    ResponseEntity<JsonObject> createPassage(@Path long user_id, @Path String waypoint_id);
 
 }
