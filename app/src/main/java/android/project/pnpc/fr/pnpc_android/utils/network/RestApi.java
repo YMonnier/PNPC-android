@@ -27,7 +27,7 @@ public interface RestApi {
 
     String getHeader(String name);
     
-    @Post("/auth/login")
+    @Post("/users/login")
     @Header(name = "Content-Type", value = "application/json")
     ResponseEntity<JsonObject> login(@Body Map<String, Object> formData);
 
