@@ -2,11 +2,15 @@ package android.project.pnpc.fr.pnpc_android.feature;
 
 import android.content.Intent;
 import android.project.pnpc.fr.pnpc_android.R;
-import android.project.pnpc.fr.pnpc_android.navigation.MapActivity;
+import android.project.pnpc.fr.pnpc_android.model.User;
 import android.project.pnpc.fr.pnpc_android.navigation.MapActivity_;
 import android.project.pnpc.fr.pnpc_android.utils.EmailValidator;
 import android.project.pnpc.fr.pnpc_android.utils.Settings;
+import android.project.pnpc.fr.pnpc_android.utils.network.GsonSingleton;
 import android.project.pnpc.fr.pnpc_android.utils.network.RestApi;
+import android.project.pnpc.fr.pnpc_android.utils.view.LoaderDialog;
+import android.project.pnpc.fr.pnpc_android.utils.view.Snack;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
@@ -30,6 +34,8 @@ import org.springframework.web.client.RestClientException;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.security.AccessController.getContext;
+
 @EActivity(R.layout.login_activity)
 public class LoginActivity extends AppCompatActivity {
 
@@ -46,18 +52,18 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * Constant which correspond to POST email Auth parameter.
      */
-    private static final String PARAMS_AUTH_EMAIL = "email";
+    private static final String PARAMS_AUTH_NICKNAME = "nickname";
 
     /**
      * Constant which correspond to POST password Auth parameter.
      */
-    private static final String PARAMS_AUTH_PASSWORD = "password";
+    private static final String PARAMS_AUTH_PASSWORD = "mdp";
 
     /**
      * Input email used to authenticate the user.
      */
-    @ViewById(R.id.emailField)
-    EditText emailView;
+    @ViewById(R.id.nicknameField)
+    EditText nicknameField;
 
     /**
      * Input password used to authenticate the user.
@@ -84,14 +90,14 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * Progress Dialog
      */
-    //private LoaderDialog progressView;
+    private LoaderDialog progressView;
 
 
     @AfterViews
     public void init() {
-        //progressView = new LoaderDialog(getContext(), getString(R.string.authenticating));
-        emailView.setText("test@gmail.com");
-        passwordView.setText("uhfeuhguheuhuehg");
+        progressView = new LoaderDialog(this, getString(R.string.authenticating));
+        nicknameField.setText("stephenbellanger");
+        passwordView.setText("supermotdepasse");
 
     }
 
@@ -111,11 +117,11 @@ public class LoginActivity extends AppCompatActivity {
      */
     private void attemptLogin() {
         // Reset errors.
-        emailView.setError(null);
+        nicknameField.setError(null);
         passwordView.setError(null);
 
         // Store values at the time of the login attempt.
-        String email = emailView.getText().toString();
+        String nickname = nicknameField.getText().toString();
         String password = passwordView.getText().toString();
 
         boolean cancel = false;
@@ -133,13 +139,9 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         // Check for a valid email address.
-        if (TextUtils.isEmpty(email)) {
-            updateErrorUi(emailView, getString(R.string.error_field_required));
-            focusView = emailView;
-            cancel = true;
-        } else if (!isEmailValid(email)) {
-            updateErrorUi(emailView, getString(R.string.error_invalid_email));
-            focusView = emailView;
+        if (TextUtils.isEmpty(nickname)) {
+            updateErrorUi(nicknameField, getString(R.string.error_field_required));
+            focusView = nicknameField;
             cancel = true;
         }
 
@@ -148,9 +150,8 @@ public class LoginActivity extends AppCompatActivity {
             if (focusView != null)
                 focusView.requestFocus();
         } else {
-            //progressView.show();
-
-            userLoginTask(email, password);
+            progressView.show();
+            userLoginTask(nickname, password);
         }
     }
 
@@ -175,7 +176,7 @@ public class LoginActivity extends AppCompatActivity {
     @UiThread
     void updateLockUi(boolean status) {
         passwordView.setEnabled(!status);
-        emailView.setEnabled(!status);
+        nicknameField.setEnabled(!status);
         loginButton.setEnabled(!status);
     }
 
@@ -207,19 +208,19 @@ public class LoginActivity extends AppCompatActivity {
      * If the connexion is succeed, we go to the sessions list.
      * Otherwise, the user put wrong data and should try again...
      *
-     * @param email    user email
+     * @param nickname    user nickname
      * @param password password email
      */
     @Background
-    void userLoginTask(final String email, final String password) {
+    void userLoginTask(final String nickname, final String password) {
         updateLockUi(true);
 
         Map<String, Object> auth = new HashMap<>();
 
-        auth.put(PARAMS_AUTH_EMAIL, email);
+        auth.put(PARAMS_AUTH_NICKNAME, nickname);
         auth.put(PARAMS_AUTH_PASSWORD, password);
 
-        startActivity(new Intent(this, MapActivity_.class));
+        //startActivity(new Intent(this, MapActivity_.class));
 
         try {
             ResponseEntity<JsonObject> responseLogin = tcRestApi.login(auth);
@@ -233,25 +234,27 @@ public class LoginActivity extends AppCompatActivity {
                 if (responseLogin.getStatusCode().is2xxSuccessful()) {
                     JsonObject json = responseLogin.getBody();
 
-                    // Login, get auth token
-                    String token = json.get("token").getAsString();
-                    Settings.TOKEN_AUTHORIZATION = token;
-                    Log.d(TAG, "token: " + token);
+                    Settings.user = GsonSingleton.getInstance().fromJson(json, User.class);
+
+                    Log.e(TAG, "Token : " + Settings.user.getAuthToken());
 
                     // Get current user information
-                    tcRestApi.setHeader(Settings.AUTHORIZATION_HEADER_NAME, token);
+                    tcRestApi.setHeader(Settings.AUTHORIZATION_HEADER_NAME, Settings.user.getAuthToken());
 
-                    //updateLockUi(false);
+                    //Start Map activity
+                    startActivity(new Intent(this, MapActivity_.class));
+
+                    updateLockUi(false);
                 }
             } else {
-                //Snack.showFailureMessage(linearLayout, getString(R.string.error_request_4xx_5xx_status), Snackbar.LENGTH_LONG);
+                Snack.showFailureMessage(linearLayout, getString(R.string.error_request_4xx_5xx_status), Snackbar.LENGTH_LONG);
             }
-            //progressView.dismiss();
+            progressView.dismiss();
         } catch (RestClientException e) {
             String error = e.getLocalizedMessage();
             Log.d(TAG, "error HTTP request from userLoginTask: " + error);
             updateLockUi(false);
-            //progressView.dismiss();
+            progressView.dismiss();
         }
     }
 

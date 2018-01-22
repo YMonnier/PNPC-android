@@ -20,6 +20,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 
+import com.estimote.coresdk.common.requirements.SystemRequirementsChecker;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
@@ -82,6 +83,7 @@ public class MapNavigation implements OnMapReadyCallback,
 
         LocationService_.intent(context).start();
 
+        SystemRequirementsChecker.checkWithDefaultDialogs(context);
         EstimoteService_.intent(context).start();
     }
 
@@ -199,6 +201,7 @@ public class MapNavigation implements OnMapReadyCallback,
         // Showing Alert Message
         alertDialog.show();
     }
+
 
 
 }
