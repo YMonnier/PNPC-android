@@ -19,7 +19,7 @@ import java.util.Map;
  * Created by stephen on 10/10/17.
  */
 
-@Rest(rootUrl = "https://api-smys.herokuapp.com/", converters = {MyGsonHttpMessageConverter.class})
+@Rest(rootUrl = "https://cloud-lsis-3.lsis.univ-tln.fr/PNPC/api", converters = {MyGsonHttpMessageConverter.class})
 
 @Accept(MediaType.APPLICATION_JSON)
 public interface RestApi {
@@ -34,6 +34,7 @@ public interface RestApi {
 
     @Post("/users/{user_id}/passages/{waypoint_id}")
     @Header(name = "Content-Type", value = "application/json")
+    @RequiresHeader("Authorization")
     ResponseEntity<JsonObject> createPassage(@Path long user_id, @Path String waypoint_id);
 
 }
