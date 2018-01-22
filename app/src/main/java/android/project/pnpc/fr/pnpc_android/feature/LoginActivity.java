@@ -96,8 +96,8 @@ public class LoginActivity extends AppCompatActivity {
     @AfterViews
     public void init() {
         progressView = new LoaderDialog(this, getString(R.string.authenticating));
-        nicknameField.setText("test");
-        passwordView.setText("uhfeuhguheuhuehg");
+        nicknameField.setText("stephenbellanger");
+        passwordView.setText("supermotdepasse");
 
     }
 
@@ -220,7 +220,7 @@ public class LoginActivity extends AppCompatActivity {
         auth.put(PARAMS_AUTH_NICKNAME, nickname);
         auth.put(PARAMS_AUTH_PASSWORD, password);
 
-        startActivity(new Intent(this, MapActivity_.class));
+        //startActivity(new Intent(this, MapActivity_.class));
 
         try {
             ResponseEntity<JsonObject> responseLogin = tcRestApi.login(auth);
@@ -235,6 +235,8 @@ public class LoginActivity extends AppCompatActivity {
                     JsonObject json = responseLogin.getBody();
 
                     Settings.user = GsonSingleton.getInstance().fromJson(json, User.class);
+
+                    Log.e(TAG, "Token : " + Settings.user.getAuthToken());
 
                     // Get current user information
                     tcRestApi.setHeader(Settings.AUTHORIZATION_HEADER_NAME, Settings.user.getAuthToken());
