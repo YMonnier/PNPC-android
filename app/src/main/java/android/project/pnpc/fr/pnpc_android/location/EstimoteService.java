@@ -21,6 +21,7 @@ import com.estimote.coresdk.recognition.packets.EstimoteLocation;
 import com.estimote.coresdk.service.BeaconManager;
 import com.google.gson.JsonObject;
 
+import org.androidannotations.annotations.Background;
 import org.androidannotations.annotations.EService;
 import org.androidannotations.rest.spring.annotations.RestService;
 import org.springframework.http.ResponseEntity;
@@ -106,10 +107,12 @@ public class EstimoteService extends Service {
         });
     }
 
-    private void savePassage(String beaconId) {
+    @Background
+    public void savePassage(String beaconId) {
         try {
+            tcRestApi.setHeader(Settings.AUTHORIZATION_HEADER_NAME, Settings.user.getAuthToken());
+
             ResponseEntity<JsonObject> responseLogin = tcRestApi.createPassage(Settings.user.getId(), beaconId);
-            Log.d(TAG, "Response create passage : " + responseLogin);
 
             if (responseLogin == null) {
                 throw new AssertionError("response login should not be null");
@@ -125,7 +128,7 @@ public class EstimoteService extends Service {
             }
         } catch (RestClientException e) {
             String error = e.getLocalizedMessage();
-            Log.d(TAG, "error HTTP request from userLoginTask: " + error);
+            Log.d(TAG, "error HTTP request from savePassage: " + error);
         }
     }
 
@@ -134,7 +137,6 @@ public class EstimoteService extends Service {
     public IBinder onBind(Intent intent) {
         return null;
     }
-
 
     @Override
     public void onDestroy() {
