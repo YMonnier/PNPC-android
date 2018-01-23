@@ -220,7 +220,7 @@ public class LoginActivity extends AppCompatActivity {
         auth.put(PARAMS_AUTH_NICKNAME, nickname);
         auth.put(PARAMS_AUTH_PASSWORD, password);
 
-        //startActivity(new Intent(this, MapActivity_.class));
+        startActivity(new Intent(this, MapActivity_.class));
 
         try {
             ResponseEntity<JsonObject> responseLogin = tcRestApi.login(auth);

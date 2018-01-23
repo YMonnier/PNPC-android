@@ -3,15 +3,9 @@ package android.project.pnpc.fr.pnpc_android.location;
 import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
-import android.project.pnpc.fr.pnpc_android.R;
-import android.project.pnpc.fr.pnpc_android.model.User;
-import android.project.pnpc.fr.pnpc_android.navigation.MapActivity_;
 import android.project.pnpc.fr.pnpc_android.utils.Settings;
-import android.project.pnpc.fr.pnpc_android.utils.network.GsonSingleton;
 import android.project.pnpc.fr.pnpc_android.utils.network.RestApi;
-import android.project.pnpc.fr.pnpc_android.utils.view.Snack;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.util.Log;
 
 import com.estimote.coresdk.common.config.EstimoteSDK;
@@ -27,9 +21,7 @@ import org.androidannotations.rest.spring.annotations.RestService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestClientException;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * Created by stephen on 21/01/18.
@@ -100,7 +92,7 @@ public class EstimoteService extends Service {
                         Log.e(TAG, "Detected !");
                         String id = beacon.id.toString();
                         String beaconId = id.substring(1, id.length()-1);
-                        savePassage(beaconId);
+                        //savePassage(beaconId);
                     }
                 }
             }

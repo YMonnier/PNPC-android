@@ -96,6 +96,7 @@ public class MapNavigation implements OnMapReadyCallback,
         LocalBroadcastManager.getInstance(context).unregisterReceiver(askLocationReceiver);
         LocationService_.intent(context)
                 .stop();
+        EstimoteService_.intent(context).stop();
     }
 
 
