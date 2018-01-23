@@ -42,6 +42,13 @@ public class EstimoteService extends Service {
     @RestService
     RestApi tcRestApi;
 
+    /**
+     * 5 minutes : 300000
+     */
+    private final static long SECONDS_WAIT = 30000;
+
+    private static final long SCANNING_INTERVAL = 30000;
+
     private String estimoteAppId = "pnpc-hiking-dzz";
 
     private String estimoteToken = "960e0687ed90bfb248b4bc9c0ed268f5";
@@ -76,6 +83,7 @@ public class EstimoteService extends Service {
 
     private void run() {
         beaconManager = new BeaconManager(getApplicationContext());
+        beaconManager.setForegroundScanPeriod(SCANNING_INTERVAL, SECONDS_WAIT);
         beaconManager.connect(new BeaconManager.ServiceReadyCallback() {
             @Override public void onServiceReady() {
                 beaconManager.startLocationDiscovery();
