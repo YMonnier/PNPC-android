@@ -108,7 +108,7 @@ dependencies {
     provided 'org.projectlombok:lombok:1.12.6'
 
     //estimote
-    compile 'com.estimote:sdk:1.0.12'
+    compile 'com.estimote:sdk:1.4.1'
 }
 
 // Stay at the bottom
