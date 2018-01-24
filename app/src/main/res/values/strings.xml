@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">PNPC-android</string>
+    <string name="prompt_nickname">Nickname</string>
+    <string name="prompt_password">Password</string>
+    <string name="login">Login</string>
+    <string name="error_request_4xx_5xx_status">Error from Server.</string>
+    <string name="authenticating">Authenticating...</string>
+</resources>

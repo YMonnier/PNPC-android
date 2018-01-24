@@ -177,3 +177,5 @@ modules.xml
 *.ipr
 
 **.~
+
+.idea/
