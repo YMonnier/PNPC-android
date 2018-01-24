@@ -220,11 +220,11 @@ public class LoginActivity extends AppCompatActivity {
         auth.put(PARAMS_AUTH_NICKNAME, nickname);
         auth.put(PARAMS_AUTH_PASSWORD, password);
 
-        startActivity(new Intent(this, MapActivity_.class));
+        //startActivity(new Intent(this, MapActivity_.class));
 
         try {
             ResponseEntity<JsonObject> responseLogin = tcRestApi.login(auth);
-            Log.d(TAG, "response login: " + responseLogin);
+            Log.e(TAG, "response login: " + responseLogin);
 
             if (responseLogin == null) {
                 throw new AssertionError("response login should not be null");

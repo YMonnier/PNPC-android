@@ -100,7 +100,7 @@ public class EstimoteService extends Service {
                         Log.e(TAG, "Detected !");
                         String id = beacon.id.toString();
                         String beaconId = id.substring(1, id.length()-1);
-                        //savePassage(beaconId);
+                        savePassage(beaconId);
                     }
                 }
             }
